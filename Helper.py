@@ -1,36 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import random
-
-
-@dataclass
-class Board:
-    board_ships: {}
-    board_wheels: {}
-    is_failed: bool = False
-
-    @property
-    def value(self):
-        if self.is_failed:
-            return 1
-        value_list = []
-        for item in self.board_ships:
-            value_list.append(TwoDice(item, self.board_ships[item][0]).value)
-        for item in self.board_wheels:
-            value_list.append(TwoDice(item, self.board_wheels[item][0]).value)
-        value_list.sort()
-        take_x = max(len(value_list) - 3, 1)
-        return sum(value_list[-take_x:])
-
-
-@dataclass
-class DiceValue:
-    movement: int
-    skulls: int
-
-    @property
-    def value(self) -> float:
-        return self.movement - self.skulls * 0.75
 
 
 @dataclass
@@ -72,12 +42,18 @@ class TwoDice:
                 or (self.color in ('red', 'blue') and self.letter in ['e']))
 
     @property
-    def value(self) -> float:
+    def movement(self) -> float:
         if self.is_wheel:
-            # todo - how much is a wheel worth?
             match self.color:
-                case 'yellow' | 'red' | 'orange' | 'green' | 'blue':
-                    return 1.5
+                case 'yellow' | 'red':
+                    return 3
+                case 'green':
+                    return 3
+                case 'orange':
+                    return 0
+                case 'blue':
+                    return 0
+
         else:
             match self.letter:
                 case 'a':
@@ -88,6 +64,18 @@ class TwoDice:
                     return 3
                 case 'e':
                     return 4
+
+    @property
+    def value(self) -> float:
+        if self.is_wheel:
+            # todo - how much is a wheel worth?
+            match self.color:
+                case 'yellow' | 'red' | 'orange':
+                    return 1.8
+                case 'blue' | 'green':
+                    return 2.1
+        else:
+            return self.movement - self.skulls * 1.1
 
     @property
     def skulls(self):
@@ -110,3 +98,24 @@ def roll_color():
 def roll_letter():
     return random.choice(['a', 'b', 'b', 'c', 'd', 'e'])
 
+
+@dataclass
+class Board:
+    board_ships: {}
+    board_wheels: {}
+    is_failed: bool = False
+
+    @property
+    def take_dice(self) -> list[TwoDice]:
+        value_list = []
+        if self.is_failed:
+            return value_list
+        for item in self.board_ships:
+            value_list.append(TwoDice(item, self.board_ships[item][0]))
+        for item in self.board_wheels:
+            value_list.append(TwoDice(item, self.board_wheels[item][0]))
+        value_list.sort(key=lambda x: x.value, reverse=True)
+        take_x = max(len(value_list) - 3, 1)
+        self.board_ships = {}
+        self.board_wheels: {}
+        return value_list[-take_x:]
