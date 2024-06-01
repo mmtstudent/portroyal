@@ -1,31 +1,51 @@
 import streamlit as st
 
-from main import play_games
+from PortRoyal import Letter, Player, Board
+from analysis import get_rolling_results
 
 st.title('Port Royal - Helper')
 
-rolls = 100000
+tries = 10000
 roll_to = st.number_input(label="roll to", min_value=1, max_value=7, value=7)
-roll_to_end = st.checkbox(label="count_wheels", value=True)
-swords = st.number_input(label="swords", min_value=0, max_value=7, value=0)
-blue_wheels = st.number_input(label="blue wheels", min_value=0, max_value=3, value=0)
-orange_wheels = st.number_input(label="orange wheels", min_value=0, max_value=3, value=0)
+count_wheels = st.checkbox(label="count_wheels", value=True)
 
-current_ships = st.number_input(label="current ships", min_value=0, max_value=5, value=0)
-current_wheels = st.number_input(label="current wheels", min_value=0, max_value=5, value=0)
+with st.expander("Player Details"):
+    swords = st.number_input(label="swords", min_value=0, max_value=7, value=0)
+    blue_wheels = st.number_input(label="blue wheels", min_value=0, max_value=3, value=0)
+    orange_wheels = st.number_input(label="orange wheels", min_value=0, max_value=3, value=0)
 
+st.title('--- Board ---')
+with st.expander("Ships"):
+    yellow_ship = st.selectbox(label="yellow ship", options=[None, Letter.A, Letter.B, Letter.C])
+    orange_ship = st.selectbox(label="orange ship", options=[None, Letter.A, Letter.B, Letter.C])
+    green_ship = st.selectbox(label="green ship", options=[None, Letter.A, Letter.B, Letter.C])
+    blue_ship = st.selectbox(label="blue ship", options=[None, Letter.A, Letter.B, Letter.C, Letter.D])
+    red_ship = st.selectbox(label="red ship", options=[None, Letter.A, Letter.B, Letter.C, Letter.D])
+    black_ship = st.selectbox(label="black ship", options=[None, Letter.A, Letter.B, Letter.C, Letter.D, Letter.E])
+with st.expander("Wheels"):
+    yellow_wheel = st.selectbox(label="yellow wheel", options=[None, Letter.D, Letter.E])
+    orange_wheel = st.selectbox(label="orange wheel", options=[None, Letter.D, Letter.E])
+    green_wheel = st.selectbox(label="green wheel", options=[None, Letter.D, Letter.E])
+    blue_wheel = st.selectbox(label="blue wheel", options=[None, Letter.E])
+    red_wheel = st.selectbox(label="red wheel", options=[None, Letter.E])
 
-data_success, movement_list, skulls_list = play_games(rolls, roll_to, swords, blue_wheels, orange_wheels, current_ships,
-                                                      current_wheels, roll_to_end)
+# Test it
+player = Player(swords=swords, blue_wheels=blue_wheels, orange_wheels=orange_wheels)
+board = Board(
+    yellow_ship=yellow_ship,
+    orange_ship=orange_ship,
+    green_ship=green_ship,
+    blue_ship=blue_ship,
+    red_ship=red_ship,
+    black_ship=black_ship,
+    yellow_wheel=yellow_wheel,
+    orange_wheel=orange_wheel,
+    green_wheel=green_wheel,
+    blue_wheel=blue_wheel,
+    red_wheel=red_wheel
+)
+data_success = get_rolling_results(tries=tries, roll_to=roll_to, count_wheels=count_wheels, board=board, player=player)
 
-success_rate = round(data_success.count(1) / rolls, 2)
+success_rate = round(data_success.count(1) / tries, 2)
 st.title("success_rate:")
 st.title(success_rate)
-
-avg_value = round(sum(movement_list) / rolls, 2)
-st.title("avg_movement:")
-st.title(avg_value)
-
-avg_skulls = round(sum(skulls_list) / rolls, 2)
-st.title("avg_skulls:")
-st.title(avg_skulls)

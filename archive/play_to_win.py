@@ -1,5 +1,5 @@
 
-from Game import Game
+from PortRoyal import Game
 
 
 def play_until_win(roll_to=3, swords=0, blue_wheels=0, orange_wheels=0, current_ships=0, current_wheels=0,
