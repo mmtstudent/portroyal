@@ -18,9 +18,15 @@ def deny_always(swords: int, roll: Roll, rolls_left: int) -> bool:
 
 def deny_smart(swords: int, board: Board, roll: Roll, rolls_left: int) -> bool:
     if roll.get_swords() <= swords and rolls_left > 1:
-        if roll.color in [Color.BLACK, Color.RED, Color.BLUE] and swords >= 4:
+        if roll.color == Color.BLACK:
+            return True
+        if roll.color in [Color.RED, Color.BLUE] and swords >= 4:
             if (roll.color == Color.RED
                     and board.ships.get(Color.BLUE) is not None
+                    and board.ships.get(Color.BLACK) is not None):
+                return False
+            if (roll.color == Color.BLUE
+                    and board.ships.get(Color.RED) is not None
                     and board.ships.get(Color.BLACK) is not None):
                 return False
             if (roll.color == Color.BLUE
