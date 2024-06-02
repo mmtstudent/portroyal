@@ -4,6 +4,7 @@ from PortRoyal import Letter, Player, Board, DenyStrategy
 from analysis import get_rolling_results
 
 st.title('Port Royal - Helper')
+st.image('./PortRoyal/images/portroyal.png')
 
 tries = 10000
 roll_to = st.number_input(label="roll to", min_value=1, max_value=7, value=7)

@@ -1,1 +1,1 @@
-![picture of the game](./static/portroyal.png)
+![picture of the game](PortRoyal/images/portroyal.png)
