@@ -1,4 +1,4 @@
-from PortRoyal.deny_strategy import DenyStrategy, deny_always, deny_never
+from PortRoyal.deny_strategy import DenyStrategy, deny_always, deny_never, deny_smart
 from PortRoyal.roll import Roll
 from PortRoyal.board import Board
 from PortRoyal.utils import Color, Letter
@@ -40,8 +40,10 @@ class Player:
 
     def will_deny(self, board: Board, roll: Roll, rolls_left: int) -> bool:
         match self.deny_strategy:
+            case DenyStrategy.SMART:
+                return deny_smart(self.swords, board, roll, rolls_left)
             case DenyStrategy.ALWAYS:
-                return deny_always(self.swords, board, roll, rolls_left)
+                return deny_always(self.swords, roll, rolls_left)
             case DenyStrategy.NEVER:
                 return deny_never()
 
