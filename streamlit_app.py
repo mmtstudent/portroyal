@@ -14,7 +14,7 @@ with st.expander("Player Details"):
     swords = st.number_input(label="swords", min_value=0, max_value=7, value=0)
     blue_wheels = st.number_input(label="blue wheels", min_value=0, max_value=3, value=0)
     orange_wheels = st.number_input(label="orange wheels", min_value=0, max_value=3, value=0)
-    deny_strategy = st.selectbox(label="deny strategy", options=[DenyStrategy.NEVER, DenyStrategy.ALWAYS, DenyStrategy.SMART])
+    deny_strategy = st.selectbox(label="deny strategy", options=[DenyStrategy.SMART, DenyStrategy.NEVER, DenyStrategy.ALWAYS])
 
 st.title('Board')
 with st.expander("Ships"):
