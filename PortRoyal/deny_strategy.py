@@ -9,15 +9,15 @@ def deny_never():
     return False
 
 
-def deny_always(swords: int, roll: Roll, rolls_left: int) -> bool:
-    if roll.get_swords() <= swords and rolls_left > 1:
+def deny_always(swords: int, roll: Roll, rolls_left: bool) -> bool:
+    if roll.get_swords() <= swords and rolls_left is True:
         return True
     else:
         return False
 
 
-def deny_smart(swords: int, board: Board, roll: Roll, rolls_left: int) -> bool:
-    if roll.get_swords() <= swords and rolls_left > 1:
+def deny_smart(swords: int, board: Board, roll: Roll, rolls_left: bool) -> bool:
+    if roll.get_swords() <= swords and rolls_left is True:
         if roll.color == Color.BLACK:
             return True
         if roll.color in [Color.RED, Color.BLUE] and swords >= 4:
